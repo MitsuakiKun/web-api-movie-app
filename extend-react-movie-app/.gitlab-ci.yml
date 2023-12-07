@@ -1,0 +1,64 @@
+image: node:latest
+
+# Pipeline
+stages:
+- install
+- build
+- exercise_job
+- test
+
+variables:
+   npm_config_cache: "$CI_PROJECT_DIR/.npm"
+   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+
+cache:
+   key:
+     files:
+        - package.json
+   paths:
+      - .npm
+      - cache/Cypress
+      - node_modules
+      - build
+
+# Jobs 
+install_dependencies:
+  stage: install
+  script:
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+
+
+exercise_job:
+  stage: exercise_job
+  only:
+    - main
+  script:
+    - echo "Run exercise after the build stage"
+
+
+e2etest:
+  # Node docker image with Cypress and Chrome pre-installed
+  stage: test
+  image:  cypress/browsers:node18.12.0-chrome106-ff106
+  script:
+  - echo "Run tests in headless mode"
+  - npx serve -s ./build  -l 3000  &
+  - npx cypress run --browser chrome
+
+build_jobX:
+  stage: build
+  only:
+    - develop
+  script:
+    - echo "build job X on demoBranch works"
+
+test_jobX:
+  stage: test
+  only:
+    - main
+    - branchX
+  script:
+    - echo "Run test job X"
