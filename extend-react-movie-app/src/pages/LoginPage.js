@@ -1,57 +1,69 @@
-import React, {  useState, useContext, useEffect } from "react";
-import { initializeApp } from "firebase/app";
-import { GoogleAuthProvider, getAuth, signInWithPopup, onAuthStateChanged } from "firebase/auth";
-import  firebaseConfig, { auth } from "../firebaseConfig";
-import { Navigate } from "react-router-dom";
+import React, {  useState, useContext } from "react";
+import { Navigate, useLocation } from "react-router-dom";
 import { LanguageContext } from '../contexts/languageContext';
 import { getString }  from '../strings.js';
-
-initializeApp(firebaseConfig);
+import { AuthContext } from '../contexts/authContext';
+import { Link } from "react-router-dom";
 
 const LoginPage = () => {
   const [user, setUser] = useState();
+  const context = useContext(AuthContext, LanguageContext);
 
-    const handleLogin = async () => {
-      const auth = getAuth();
-      const provider = new GoogleAuthProvider();
-      provider.setCustomParameters({
-      hd: "mail.wit.ie",
-    });
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
 
-    try {
-        await signInWithPopup(auth, provider);
-      } catch (error) {
-        console.error("Error signing in with Google:", error);
-      }
-    };
+  const login = () => {
+      context.authenticate(userName, password);
+  };
+
+  let location = useLocation();
+
+  // Set 'from' to path where browser is redirected after a successful login - either / or the protected path user requested
+  const { from } = location.state ? { from: location.state.from.pathname } : { from: "/" };
+
+  if (context.isAuthenticated === true) {
+      return <Navigate to={from} />;
+  }
 
 
-    useEffect(() => {
-      onAuthStateChanged(auth, (currentUser) => {
-        setUser(currentUser);
-      });
-    });
-  
-    const { language } = useContext(LanguageContext);
-  
-    return (
-      <>
-        {user ? (
-          <Navigate to={`/`} />
-        ) : (
-          <>
-            <div style={styles.container}>
-              <img
-                  src="http://devops.witdemo.net/logo.jpg"
-                  alt="Logo"
-                  style={styles.logo}
-              />
-              <h1 style={styles.heading}>{getString(language, "loginPage")}</h1>
-              <button style={styles.button} onClick={handleLogin}>
-                Login with @mail.wit.ie Google Account
-              </button>
-            </div>
-          </>
+  return (
+    <>
+      {user ? (
+        <Navigate to={`/`} />
+      ) : (
+        <>
+          <div style={styles.container}>
+            <img
+                src="http://devops.witdemo.net/logo.jpg"
+                alt="Logo"
+                style={styles.logo}
+            />
+            <h1 style={styles.heading}>{getString(context, "loginPage")}</h1>
+            <input
+              id="username"
+              placeholder="Username"
+              style={styles.input}
+              onChange={(e) => {
+                setUserName(e.target.value);
+              }}
+            ></input>
+            <input
+              id="password"
+              type="password"
+              placeholder="Password"
+              style={styles.input}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            ></input>
+            <button style={styles.button} onClick={login}>
+              Login
+            </button>
+            <Link to="/signup" style={styles.signupLink}>
+              Sign Up
+            </Link>
+          </div>
+        </>
         )}
       </>
     );
@@ -68,8 +80,14 @@ const LoginPage = () => {
     },
     heading: {
       fontSize: '2rem',
-      marginBottom: '20px',
+      marginBottom: '0px',
       color: '#1e364d',
+    },
+    input: {
+      width: '300px',
+      padding: '10px',
+      margin: '8px 0',
+      boxSizing: 'border-box',
     },
     button: {
       padding: '10px 20px',
@@ -83,6 +101,14 @@ const LoginPage = () => {
     logo: {
       width: '370px', 
       height: '204px', 
+      marginBottom: '20px',
+    },
+    signupLink: {
+      marginTop: '10px',
+      textDecoration: 'none',
+      color: '#4caf50',
+      cursor: 'pointer',
+      fontSize: '1rem',
       marginBottom: '20px',
     },
   };

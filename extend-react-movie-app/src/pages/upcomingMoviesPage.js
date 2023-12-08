@@ -6,21 +6,11 @@ import Spinner from '../components/spinner';
 import AddToMustWatchesIcon from '../components/cardIcons/addToMustWatches';
 import { LanguageContext } from '../contexts/languageContext';
 import { getString }  from '../strings.js';
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebaseConfig.js";
 import { Navigate } from "react-router-dom";
 
 const UpcomingMoviesPage = (props) => {
-  const [user, setUser] = useState("");
-
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-  }, []);
 
   const { language } = useContext(LanguageContext);
  
@@ -29,7 +19,6 @@ const UpcomingMoviesPage = (props) => {
   useEffect(() => {
       refetch();
   }, [language, refetch]);
-
 
 
   if (isLoading) {
@@ -48,11 +37,7 @@ const UpcomingMoviesPage = (props) => {
 
   return (
     <>
-    {!loading && (
       <>
-        {!user ? (
-          <Navigate to={`/login/`} />
-        ) : (
           <>
             <PageTemplate
             title={getString(language, "upcomingMovies")}
@@ -63,9 +48,7 @@ const UpcomingMoviesPage = (props) => {
               }}
             />
           </>
-        )}
           </>
-        )}
     </>
   );
 };
