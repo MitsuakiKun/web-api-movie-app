@@ -6,24 +6,8 @@ import Spinner from '../components/spinner';
 import AddToFavoritesIcon from '../components/cardIcons/addToFavorites'
 import { LanguageContext } from '../contexts/languageContext';
 import { getString }  from '../strings.js';
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebaseConfig.js";
-import { Navigate } from "react-router-dom";
 
 const HomePage = (props) => {
-
-  const [user, setUser] = useState("");
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-  }, []);
-
-
   const { language } = useContext(LanguageContext);
   const { data, error, isLoading, isError, refetch }  = useQuery('discover', () => getMovies(language));
 
@@ -48,11 +32,7 @@ const HomePage = (props) => {
 
   return (
     <>
-      {!loading && (
         <>
-          {!user ? (
-            <Navigate to={`/login/`} />
-          ) : (
             <>
               <PageTemplate
                 title={getString(language, "discoverMovies")}
@@ -62,9 +42,7 @@ const HomePage = (props) => {
                 }}
               />
             </>
-            )}
           </>
-        )}
     </>
   );
 };

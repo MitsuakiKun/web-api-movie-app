@@ -8,21 +8,9 @@ import RemoveFromFavorites from "../components/cardIcons/removeFromFavorites";
 import WriteReview from "../components/cardIcons/writeReview";
 import { LanguageContext } from '../contexts/languageContext';
 import { getString }  from '../strings.js';
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebaseConfig.js";
 import { Navigate } from "react-router-dom";
 
 const FavoriteMoviesPage = () => {
-  const [user, setUser] = useState("");
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-  }, []);
 
   const {favorites: movieIds } = useContext(MoviesContext);
   const { language } = useContext(LanguageContext);
@@ -60,11 +48,7 @@ const FavoriteMoviesPage = () => {
 
   return (
     <>
-    {!loading && (
       <>
-        {!user ? (
-          <Navigate to={`/login/`} />
-        ) : (
           <>
             <PageTemplate
             title={getString(language, "favoriteMovies")}
@@ -79,9 +63,7 @@ const FavoriteMoviesPage = () => {
               }}
             />
           </>
-        )}
           </>
-        )}
     </>
   );
 };

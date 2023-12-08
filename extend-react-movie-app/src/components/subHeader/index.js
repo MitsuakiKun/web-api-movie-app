@@ -12,8 +12,6 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { LanguageContext } from "../../contexts/languageContext";
 import { getString }  from '../../strings.js';
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "../../firebaseConfig.js";
 
 const Offset = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
@@ -25,12 +23,7 @@ const SubHeader = ({ history }) => {
   const [,setLoading] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-  }, []);
+
 
   const navigate = useNavigate();
 
@@ -50,10 +43,7 @@ const SubHeader = ({ history }) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const logout = async () => {
-    await signOut(auth);
-    navigate("/login/");
-  }
+
 
 
   return (
@@ -96,7 +86,7 @@ const SubHeader = ({ history }) => {
                 <Button color="inherit" onClick={() => changeLanguage("ja-JA")}>
                   日本語
                 </Button>
-                <Button color="inherit" onClick={() => logout()}>
+                <Button color="inherit" >
                   {getString(language, "logout")}
                 </Button>
               </>
