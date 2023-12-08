@@ -9,7 +9,6 @@ import { getString }  from '../strings.js';
 import { Navigate } from "react-router-dom";
 
 const UpcomingMoviesPage = (props) => {
-  const [loading, setLoading] = useState(true);
 
 
   const { language } = useContext(LanguageContext);

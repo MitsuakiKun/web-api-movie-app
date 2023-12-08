@@ -8,7 +8,6 @@ import { LanguageContext } from '../contexts/languageContext';
 import { getString }  from '../strings.js';
 
 const HomePage = (props) => {
-  const [loading, setLoading] = useState(true);
   const { language } = useContext(LanguageContext);
   const { data, error, isLoading, isError, refetch }  = useQuery('discover', () => getMovies(language));
 

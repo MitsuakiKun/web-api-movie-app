@@ -5,9 +5,12 @@ import { getString }  from '../strings.js';
 import { AuthContext } from '../contexts/authContext';
 import { Link } from "react-router-dom";
 
+
 const LoginPage = () => {
   const [user, setUser] = useState();
-  const context = useContext(AuthContext, LanguageContext);
+  const context= useContext(AuthContext);
+  const { language } = useContext(LanguageContext);
+  
 
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -38,7 +41,7 @@ const LoginPage = () => {
                 alt="Logo"
                 style={styles.logo}
             />
-            <h1 style={styles.heading}>{getString(context, "loginPage")}</h1>
+            <h1 style={styles.heading}>{getString(language, "loginPage")}</h1>
             <input
               id="username"
               placeholder="Username"
@@ -57,10 +60,10 @@ const LoginPage = () => {
               }}
             ></input>
             <button style={styles.button} onClick={login}>
-              Login
+              {getString(language, "login")}
             </button>
             <Link to="/signup" style={styles.signupLink}>
-              Sign Up
+              {getString(language, "signUp")}
             </Link>
           </div>
         </>
@@ -101,7 +104,7 @@ const LoginPage = () => {
     logo: {
       width: '370px', 
       height: '204px', 
-      marginBottom: '20px',
+      marginBottom: '0px',
     },
     signupLink: {
       marginTop: '10px',

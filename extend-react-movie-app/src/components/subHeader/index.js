@@ -12,7 +12,6 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { LanguageContext } from "../../contexts/languageContext";
 import { getString }  from '../../strings.js';
-import { onAuthStateChanged, signOut } from "firebase/auth";
 
 const Offset = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,

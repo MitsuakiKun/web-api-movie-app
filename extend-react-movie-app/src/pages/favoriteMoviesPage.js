@@ -11,9 +11,6 @@ import { getString }  from '../strings.js';
 import { Navigate } from "react-router-dom";
 
 const FavoriteMoviesPage = () => {
-  const [user, setUser] = useState("");
-
-  const [loading, setLoading] = useState(true);
 
   const {favorites: movieIds } = useContext(MoviesContext);
   const { language } = useContext(LanguageContext);
