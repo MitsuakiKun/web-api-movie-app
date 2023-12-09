@@ -1,4 +1,4 @@
-import React, {useContext}  from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -18,18 +18,36 @@ import Avatar from '@mui/material/Avatar';
 import { MoviesContext } from "../../contexts/moviesContext";
 import { LanguageContext } from '../../contexts/languageContext';
 import { getString }  from '../../strings.js';
+import { getFavorites } from "../../api/movies-api.js"; 
 
 
 export default function MovieCard({ movie, action = () => null }) {
-  const { favorites, addToFavorites, mustWatches, addToMustWatches} = useContext(MoviesContext);
+  const { addToFavorites, mustWatches, addToMustWatches} = useContext(MoviesContext);
   const { language } = useContext(LanguageContext);
 
+  const [isFavorite, setIsFavorite] = useState(false);
 
-  if (favorites.find((id) => id === movie.id)) {
-    movie.favorite = true;
-  } else {
-    movie.favorite = false
-  }
+  useEffect(() => {
+    async function checkFavoriteStatus() {
+      try {
+        const favorites_data = await getFavorites();
+        const movieId = Number(movie.id);
+        const isMovieFavorite = favorites_data.find((data) => data.id === movieId);
+
+        setIsFavorite(!!isMovieFavorite);
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+      }
+    }
+
+    checkFavoriteStatus();
+  }, [movie.id]);
+
+  const handleAddToFavorite = (e) => {
+    e.preventDefault();
+    addToFavorites(movie);
+    setIsFavorite(true); // Update the local state immediately
+  };
 
   if (mustWatches.find((id) => id === movie.id)) {
     movie.mustWatches = true;
@@ -37,10 +55,6 @@ export default function MovieCard({ movie, action = () => null }) {
     movie.mustWatches = false;
   }
 
-  const handleAddToFavorite = (e) => {
-    e.preventDefault();
-    addToFavorites(movie);
-  };
 
   const handleAddToMustWatches = (e) => {
     e.preventDefault();
@@ -53,7 +67,7 @@ export default function MovieCard({ movie, action = () => null }) {
     <Card sx={{ maxWidth: 345 }}>
       <CardHeader
         avatar={
-          movie.favorite ? (
+          isFavorite ? (
             <Avatar sx={{ backgroundColor: 'red' }}>
               <FavoriteIcon />
             </Avatar>
