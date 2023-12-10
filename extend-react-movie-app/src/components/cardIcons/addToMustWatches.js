@@ -2,13 +2,14 @@ import React, { useContext } from "react";
 import { MoviesContext } from "../../contexts/moviesContext";
 import IconButton from "@mui/material/IconButton";
 import PlaylistIcon from "@mui/icons-material/PlaylistAdd";
+import { addToMustWatches } from "../../api/movies-api";
+
 
 const addToMustWatchesIcon = ({ movie }) => {
-  const context = useContext(MoviesContext);
 
   const handleAddToMustWatches = (e) => {
     e.preventDefault();
-    context.addToMustWatches(movie);
+    addToMustWatches(movie.id);
   };
 
   return (

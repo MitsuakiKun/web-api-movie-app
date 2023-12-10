@@ -8,4 +8,4 @@ const  MustWatchSchema = new Schema({
 
   
 
-export default mongoose.model('Favorite', FavoriteSchema);
+export default mongoose.model('MustWatch', MustWatchSchema);

@@ -18,14 +18,14 @@ import Avatar from '@mui/material/Avatar';
 import { MoviesContext } from "../../contexts/moviesContext";
 import { LanguageContext } from '../../contexts/languageContext';
 import { getString }  from '../../strings.js';
-import { getFavorites } from "../../api/movies-api.js"; 
+import { getFavorites, getMustWatches } from "../../api/movies-api.js"; 
 
 
 export default function MovieCard({ movie, action = () => null }) {
-  const { mustWatches, addToMustWatches} = useContext(MoviesContext);
   const { language } = useContext(LanguageContext);
 
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isMustWatch, setIsMustWatch] = useState(false);
 
   useEffect(() => {
     async function checkFavoriteStatus() {
@@ -38,15 +38,21 @@ export default function MovieCard({ movie, action = () => null }) {
         console.error('Error fetching favorites:', error);
       }
     }
+    async function checkMustWatchStatus() {
+      try {
+        const mustWatches_data = await getMustWatches();
+        const movieId = Number(movie.id);
+        const isMovieMustWatch = mustWatches_data.find((data) => data.id === movieId);
+        setIsMustWatch(!!isMovieMustWatch);
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+      }
+    }
+    checkMustWatchStatus();
     checkFavoriteStatus();
   }, [movie.id]);
 
-  if (mustWatches.find((id) => id === movie.id)) {
-    movie.mustWatches = true;
-  } else {
-    movie.mustWatches = false;
-  }
- 
+
 
   return (
     <Card sx={{ maxWidth: 345 }}>
@@ -56,7 +62,7 @@ export default function MovieCard({ movie, action = () => null }) {
             <Avatar sx={{ backgroundColor: 'red' }}>
               <FavoriteIcon />
             </Avatar>
-          ) : movie.mustWatches ? (
+          ) : isMustWatch ? (
             <Avatar sx={{ backgroundColor: 'red' }}>
               <PlayListIcon />
             </Avatar>

@@ -65,3 +65,38 @@ export const addToFavorites = async (id) => {
     const data = await response.json();
     return data;
   };
+
+  export const addToMustWatches = async (id) => {
+    const response = await fetch(`http://localhost:8080/api/users/${id}/mustWatch`, {
+        headers: {
+          'Authorization': window.localStorage.getItem('token'),
+          'Content-Type': 'application/json'
+        },
+        method: 'post',
+        body: JSON.stringify({ id: id })
+    });
+    return response.json();
+    };
+  
+    export const removeFromMustWatches = async (id) => {
+      const response = await fetch(`http://localhost:8080/api/users/${id}/mustWatch`, {
+          headers: {
+            'Authorization': window.localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+          },
+          method: 'delete'
+      });
+      return response.json();
+    };
+  
+    export const getMustWatches = async () => {
+      const response = await fetch(`http://localhost:8080/api/users/mustWatch`, {
+          headers: {
+            'Authorization': window.localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+          },
+          method: 'get'
+      });
+      const data = await response.json();
+      return data;
+    };

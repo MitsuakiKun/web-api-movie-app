@@ -98,6 +98,17 @@ router.get('/mustWatch', async (req, res) => {
     res.status(200).json(mustWatches);
 });
 
+router.post('/:id/mustWatch', async (req, res) => {
+    try{
+        await addMustWatch(req.params.id);
+        res.status(201).json({ success: true, msg: 'MustWatch successfully created.' });
+    } catch (error) {
+        // Log the error and return a generic error message
+        console.error(error);
+        res.status(500).json({ success: false, msg: 'Internal server error.' });
+    }
+});
+
 router.delete('/:id/mustWatch', async (req, res) => {
     try {
         // Ensure that the mustWatch being deleted belongs to the specified user
@@ -130,6 +141,17 @@ router.delete('/mustWatch', async (req, res) => {
     }
 });
 
+async function addMustWatch(id) {
+    try {
+        console.log('Adding mustWatch for user ID:', id);
+        await MustWatch.create({ id: id });
+        console.log('MustWatch created successfully.');
+    } catch (error) {
+        console.error('Error in addMustWatch function:', error);
+        throw error; // rethrow the error to be caught by the route handler
+    }
+}
+
 async function registerUser(req, res) {
     // Add input validation logic here
     await User.create(req.body);
@@ -161,6 +183,8 @@ async function addFavorite(id) {
         throw error; // rethrow the error to be caught by the route handler
     }
 }
+
+
 
 
 
