@@ -52,6 +52,7 @@ const MoviesContextProvider = (props) => {
          removeFromFavorites,
          addReview,
          addToMustWatches,
+         setFavorites,
        }}
      >
        {props.children}

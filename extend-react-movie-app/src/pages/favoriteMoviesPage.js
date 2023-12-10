@@ -9,12 +9,21 @@ import WriteReview from "../components/cardIcons/writeReview";
 import { LanguageContext } from '../contexts/languageContext';
 import { getString }  from '../strings.js';
 import { Navigate } from "react-router-dom";
+import { getFavorites } from '../api/movies-api.js';
 
 const FavoriteMoviesPage = () => {
 
-  const {favorites: movieIds } = useContext(MoviesContext);
+  const { favorites: movieIds, addToFavorites, setFavorites } = useContext(MoviesContext);
   const { language } = useContext(LanguageContext);
-  
+
+  // Fetch favorite movies
+  const favoritesQuery = useQueries([
+    {
+      queryKey: 'favorites',
+      queryFn: getFavorites,
+    },
+  ]);
+
   // Create an array of queries and run in parallel.
   const favoriteMovieQueries = useQueries(
     movieIds.map((movieId) => {
@@ -24,14 +33,42 @@ const FavoriteMoviesPage = () => {
       };
     })
   );
-  // Check if any of the parallel queries is still loading.
-  const isLoading = favoriteMovieQueries.find((m) => m.isLoading === true);
   
+  // Check if any of the parallel queries is still loading.
+  const isLoading = favoriteMovieQueries.some((m) => m.isLoading);
+
   useEffect(() => {
-    favoriteMovieQueries.forEach((query) => {
-      query.refetch();
-    });
-  }, [language, favoriteMovieQueries]);
+    const fetchAndAddToFavorites = async () => {
+      try {
+        const favoritesData = favoritesQuery[0].data || [];
+
+        const uniqueMovieIds = Array.from(new Set([...movieIds, ...favoritesData.map((data) => data.id)]));
+
+        // Update the context with the new set of movie IDs
+        setFavorites(uniqueMovieIds);
+
+        const moviesData = await Promise.all(
+          uniqueMovieIds.map((movieId) => ({
+            queryKey: ['movie', { id: movieId, language }],
+            queryFn: getMovie,
+          }))
+        );
+
+
+        const newMovieIds = moviesData.map(movie => movie.id);
+        const updatedMovieIds = Array.from(new Set([...movieIds, ...newMovieIds]));
+  
+        updatedMovieIds.forEach((movieId) => {
+          addToFavorites(moviesData.find((movie) => movie.id === movieId));
+        });
+      } catch (error) {
+        console.error('Error fetching and adding to favorites:', error);
+      }
+    };
+    if (favoritesQuery[0].data) {
+      fetchAndAddToFavorites();
+    }
+  }, [language, movieIds, setFavorites, addToFavorites, favoritesQuery]);
 
   if (isLoading) {
     return <Spinner />;
@@ -44,7 +81,6 @@ const FavoriteMoviesPage = () => {
     return q.data;
   });
 
-  const toDo = () => true;
 
   return (
     <>

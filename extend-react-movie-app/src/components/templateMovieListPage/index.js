@@ -18,13 +18,13 @@ function MovieListPageTemplate({ movies, title, action }) {
   };
 
   let displayedMovies = movies
-    .filter((m) => {
-      return m.title.toLowerCase().search(nameFilter.toLowerCase()) !== -1;
-    })
-    .filter((m) => {
-      return genreId > 0 ? m.genre_ids.includes(genreId) : true;
-    });
-
+  .filter((m) => {
+    return m && m.title && m.title.toLowerCase().search(nameFilter.toLowerCase()) !== -1;
+  })
+  .filter((m) => {
+    return m && genreId > 0 ? m.genre_ids?.includes(genreId) : true;
+  });
+  
   if (sortFilter === "vote_average.desc") {
     displayedMovies.sort((a, b) => b.vote_average - a.vote_average);
   } else if (sortFilter === "vote_average.asc") {

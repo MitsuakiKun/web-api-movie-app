@@ -9,7 +9,7 @@ const RemoveFromFavoritesIcon = ({ movie }) => {
 
   const handleRemoveFromFavorites = (e) => {
     e.preventDefault();
-    removeFromFavorites(movie);
+    removeFromFavorites(movie.id);
   };
 
   return (

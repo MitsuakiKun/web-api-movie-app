@@ -22,7 +22,7 @@ import { getFavorites } from "../../api/movies-api.js";
 
 
 export default function MovieCard({ movie, action = () => null }) {
-  const { addToFavorites, mustWatches, addToMustWatches} = useContext(MoviesContext);
+  const { mustWatches, addToMustWatches} = useContext(MoviesContext);
   const { language } = useContext(LanguageContext);
 
   const [isFavorite, setIsFavorite] = useState(false);
@@ -33,34 +33,19 @@ export default function MovieCard({ movie, action = () => null }) {
         const favorites_data = await getFavorites();
         const movieId = Number(movie.id);
         const isMovieFavorite = favorites_data.find((data) => data.id === movieId);
-
         setIsFavorite(!!isMovieFavorite);
       } catch (error) {
         console.error('Error fetching favorites:', error);
       }
     }
-
     checkFavoriteStatus();
   }, [movie.id]);
-
-  const handleAddToFavorite = (e) => {
-    e.preventDefault();
-    addToFavorites(movie);
-    setIsFavorite(true); // Update the local state immediately
-  };
 
   if (mustWatches.find((id) => id === movie.id)) {
     movie.mustWatches = true;
   } else {
     movie.mustWatches = false;
   }
-
-
-  const handleAddToMustWatches = (e) => {
-    e.preventDefault();
-    addToMustWatches(movie);
-  };
-
  
 
   return (

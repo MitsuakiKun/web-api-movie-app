@@ -62,5 +62,6 @@ export const addToFavorites = async (id) => {
         },
         method: 'get'
     });
-    return response.json();
+    const data = await response.json();
+    return data;
   };
