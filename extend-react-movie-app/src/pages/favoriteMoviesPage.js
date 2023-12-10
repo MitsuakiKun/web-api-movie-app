@@ -59,7 +59,10 @@ const FavoriteMoviesPage = () => {
         const updatedMovieIds = Array.from(new Set([...movieIds, ...newMovieIds]));
   
         updatedMovieIds.forEach((movieId) => {
-          addToFavorites(moviesData.find((movie) => movie.id === movieId));
+          const movie = moviesData.find((movie) => movie.id === movieId);
+          if (movie) {
+            addToFavorites(movie);
+          }
         });
       } catch (error) {
         console.error('Error fetching and adding to favorites:', error);

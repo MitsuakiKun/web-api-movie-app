@@ -28,7 +28,6 @@ const MoviesContextProvider = (props) => {
     }
     setMustWatches(newMustWatches)
   };
-  console.log(mustWatches);
   
   
   // We will use this function in a later section
@@ -53,6 +52,7 @@ const MoviesContextProvider = (props) => {
          addReview,
          addToMustWatches,
          setFavorites,
+         setMustWatches,
        }}
      >
        {props.children}

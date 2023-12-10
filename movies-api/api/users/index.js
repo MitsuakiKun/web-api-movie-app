@@ -3,6 +3,7 @@ import User from './userModel';
 import jwt from 'jsonwebtoken';
 import asyncHandler from 'express-async-handler';
 import Favorite from '../favorites/favoriteModel';
+import MustWatch from '../mustWatches/mustWatchModel';
 
 const router = express.Router(); // eslint-disable-line
 
@@ -85,6 +86,43 @@ router.delete('/favorite', async (req, res) => {
             res.status(200).json({ success: true, msg: 'Favorite successfully deleted.' });
         } else {
             res.status(404).json({ success: false, msg: 'Favorite not found or not associated with the user.' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, msg: 'Internal server error.' });
+    }
+});
+
+router.get('/mustWatch', async (req, res) => {
+    const mustWatches = await MustWatch.find();
+    res.status(200).json(mustWatches);
+});
+
+router.delete('/:id/mustWatch', async (req, res) => {
+    try {
+        // Ensure that the mustWatch being deleted belongs to the specified user
+        const mustWatch = await MustWatch.findOneAndDelete({ id: req.params.id });
+
+        if (mustWatch) {
+            res.status(200).json({ success: true, msg: 'mustWatch successfully deleted.' });
+        } else {
+            res.status(404).json({ success: false, msg: 'mustWatch not found or not associated with the user.' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, msg: 'Internal server error.' });
+    }
+});
+
+router.delete('/mustWatch', async (req, res) => {
+    try {
+        // Ensure that the mustWatch being deleted belongs to the specified user
+        const mustWatch = await MustWatch.deleteMany({});
+
+        if (mustWatch) {
+            res.status(200).json({ success: true, msg: 'mustWatch successfully deleted.' });
+        } else {
+            res.status(404).json({ success: false, msg: 'mustWatch not found or not associated with the user.' });
         }
     } catch (error) {
         console.error(error);
