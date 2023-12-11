@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 import asyncHandler from 'express-async-handler';
 import Favorite from '../favorites/favoriteModel';
 import MustWatch from '../mustWatches/mustWatchModel';
-import Review from '../reviews/reviewModel';
 
 const router = express.Router(); // eslint-disable-line
 
@@ -184,7 +183,6 @@ async function addFavorite(id) {
         throw error; // rethrow the error to be caught by the route handler
     }
 }
-
 
 
 
