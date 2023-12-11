@@ -134,8 +134,8 @@ export const addToFavorites = async (id) => {
       return response.json();
     };
   
-    export const getReviews = async () => {
-      const response = await fetch(`http://localhost:8080/api/reviews`, {
+    export const getReviews = async (movieId) => {
+      const response = await fetch(`http://localhost:8080/api/reviews/${movieId}`, {
           headers: {
             'Authorization': window.localStorage.getItem('token'),
             'Content-Type': 'application/json'
@@ -143,5 +143,5 @@ export const addToFavorites = async (id) => {
           method: 'get'
       });
       const data = await response.json();
-      return data;
+      return data.reviews;
     };

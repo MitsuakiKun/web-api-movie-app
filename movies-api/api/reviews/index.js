@@ -11,6 +11,27 @@ router.get('/', async (req, res) => {
     res.status(200).json(reviews);
 });
 
+router.get('/:movieId', async (req, res) => {
+    try {
+        const movieId = req.params.movieId;
+
+        // Find all reviews with the specified movieId
+        const reviews = await Review.find({ movieId });
+
+        if (reviews.length > 0) {
+            // If reviews are found, send them as a response
+            res.status(200).json({ success: true, reviews });
+        } else {
+            // If no reviews are found, send a 404 response
+            res.status(404).json({ success: false, message: 'No reviews found for the specified movieId' });
+        }
+    } catch (error) {
+        // Handle any errors that occur during the database query
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
 
 router.post('/:id', async (req, res) => {
     try{

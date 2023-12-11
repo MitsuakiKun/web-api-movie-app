@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { getMovieReviews } from "../../api/tmdb-api";
 import { excerpt } from "../../util";
 import { getString }  from '../../strings.js';
+import { getReviews } from "../../api/movies-api.js";
 
 
 export default function MovieReviews({ movie, language}) {
@@ -18,6 +19,10 @@ export default function MovieReviews({ movie, language}) {
   useEffect(() => {
     getMovieReviews(movie.id).then((reviews) => {
       setReviews(reviews);
+    });
+    getReviews(movie.id).then((reviews) => {
+      setReviews(reviews);
+      console.log(reviews);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -38,7 +43,7 @@ export default function MovieReviews({ movie, language}) {
               <TableCell component="th" scope="row">
                 {r.author}
               </TableCell>
-              <TableCell >{excerpt(r.content)}</TableCell>
+              <TableCell >{excerpt(r.content)||excerpt(r.review)}</TableCell>
               <TableCell >
               <Link
                   to={`/reviews/${r.id}`}
