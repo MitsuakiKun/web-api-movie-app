@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useRef, useContext, useEffect } from 'react';
 import PageTemplate from "../components/templateMovieListPage";
 import { MoviesContext } from "../contexts/moviesContext";
 import { useQueries } from "react-query";
@@ -15,6 +15,7 @@ const FavoriteMoviesPage = () => {
 
   const { favorites: movieIds, addToFavorites, setFavorites } = useContext(MoviesContext);
   const { language } = useContext(LanguageContext);
+  const isMounted = useRef(true);
 
   // Fetch favorite movies
   const favoritesQuery = useQueries([
@@ -46,7 +47,6 @@ const FavoriteMoviesPage = () => {
 
         // Update the context with the new set of movie IDs
         setFavorites(uniqueMovieIds);
-
         const moviesData = await Promise.all(
           uniqueMovieIds.map((movieId) => ({
             queryKey: ['movie', { id: movieId, language }],
@@ -57,20 +57,26 @@ const FavoriteMoviesPage = () => {
 
         const newMovieIds = moviesData.map(movie => movie.id);
         const updatedMovieIds = Array.from(new Set([...movieIds, ...newMovieIds]));
-  
-        updatedMovieIds.forEach((movieId) => {
-          const movie = moviesData.find((movie) => movie.id === movieId);
-          if (movie) {
-            addToFavorites(movie);
-          }
-        });
+        if (isMounted.current) {
+          updatedMovieIds.forEach((movieId) => {
+            const movie = moviesData.find((movie) => movie.id === movieId);
+            if (movie) {
+              addToFavorites(movie);
+            }
+          });
+        }
       } catch (error) {
         console.error('Error fetching and adding to favorites:', error);
       }
     };
-    if (favoritesQuery[0].data) {
+    if (favoritesQuery[0].data && favoritesQuery[0].data.length > 0) {
       fetchAndAddToFavorites();
     }
+    
+    return () => {
+      // Cleanup: set isMounted to false when the component unmounts
+      isMounted.current = false;
+    };
   }, [language, movieIds, setFavorites, addToFavorites, favoritesQuery]);
 
   if (isLoading) {

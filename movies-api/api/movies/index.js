@@ -47,4 +47,6 @@ router.get('/tmdb/genres', asyncHandler(async (req, res) => {
     res.status(200).json(genres);
 }));
 
+
+
 export default router;

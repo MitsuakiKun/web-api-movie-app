@@ -10,15 +10,26 @@ import { Link } from "react-router-dom";
 import { getMovieReviews } from "../../api/tmdb-api";
 import { excerpt } from "../../util";
 import { getString }  from '../../strings.js';
+import { getReviews } from "../../api/movies-api.js";
 
 
 export default function MovieReviews({ movie, language}) {
   const [reviews, setReviews] = useState([]);
-
+  
   useEffect(() => {
-    getMovieReviews(movie.id).then((reviews) => {
-      setReviews(reviews);
-    });
+    Promise.all([
+      getMovieReviews(movie.id),
+      getReviews(movie.id)
+    ])
+    .then(([movieReviews, reviewsFromApi]) => {
+      const reviewsToAdd = reviewsFromApi ? reviewsFromApi : [];
+      const uniqueReviews = new Set([...reviews, ...movieReviews,  ...reviewsToAdd]);
+      setReviews([...uniqueReviews]);
+    })
+      .catch((error) => {
+        // Handle any errors that occurred during the fetch
+        console.error('Error fetching reviews:', error);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -33,12 +44,12 @@ export default function MovieReviews({ movie, language}) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {reviews.map((r) => (
+        {reviews && reviews.map((r) => (
             <TableRow key={r.id}>
               <TableCell component="th" scope="row">
                 {r.author}
               </TableCell>
-              <TableCell >{excerpt(r.content)}</TableCell>
+              <TableCell >{((r?.content || r?.review) || '')}</TableCell>
               <TableCell >
               <Link
                   to={`/reviews/${r.id}`}

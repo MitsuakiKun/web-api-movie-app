@@ -100,3 +100,48 @@ export const addToFavorites = async (id) => {
       const data = await response.json();
       return data;
     };
+
+    
+  export const addToReviews = async (id, rating, review, author) => {
+    console.log(JSON.stringify({ movieId: id, rating: rating, review: review, author: author }));
+    try {
+      const response = await fetch(`http://localhost:8080/api/reviews/${id}`, {
+          headers: {
+              'Authorization': window.localStorage.getItem('token'),
+              'Content-Type': 'application/json'
+          },
+          method: 'post',
+          body: JSON.stringify({ movieId: id, rating: rating, review: review, author: author })
+      });
+
+      const responseData = await response.json();
+      console.log('addReview:', responseData);
+      return responseData;
+  } catch (error) {
+      console.error('Error adding review:', error.message);
+      throw error; // You might want to handle this error in the calling code
+  }
+};
+  
+    export const removeFromReviews = async (id) => {
+      const response = await fetch(`http://localhost:8080/api/reviews/${id}`, {
+          headers: {
+            'Authorization': window.localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+          },
+          method: 'delete'
+      });
+      return response.json();
+    };
+  
+    export const getReviews = async (movieId) => {
+      const response = await fetch(`http://localhost:8080/api/reviews/${movieId}`, {
+          headers: {
+            'Authorization': window.localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+          },
+          method: 'get'
+      });
+      const data = await response.json();
+      return data.reviews;
+    };

@@ -9,6 +9,7 @@ import { MoviesContext } from "../../contexts/moviesContext";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
+import { addToReviews } from "../../api/movies-api";
 
 const ratings = [
   {
@@ -95,8 +96,8 @@ const ReviewForm = ({ movie }) => {
   const onSubmit = (review) => {
     review.movieId = movie.id;
     review.rating = rating;
-    // console.log(review);
     context.addReview(movie, review);
+    addToReviews(movie.id, review.rating, review.review, review.author);
     setOpen(true); // NEW
   };
 
