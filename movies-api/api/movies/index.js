@@ -29,42 +29,50 @@ router.get('/', asyncHandler(async (req, res) => {
 
 
 router.get('/tmdb/upcoming/:language', asyncHandler(async (req, res) => {
+    console.log("upcoming:", req.params);
     const upcomingMovies = await getUpcomingMovies(req.params.language);
     res.status(200).json(upcomingMovies);
 }));
 
 router.get('/tmdb/genres/:language', asyncHandler(async (req, res) => {
+    console.log("genres:", req.params);
     const genres = await getGenres(req.params.language);
     res.status(200).json(genres);
 }));
 
 router.get('/:language', asyncHandler(async (req, res) => {
-    console.log("result:", req.params);
+    console.log("movies:", req.params);
     const movies = await getMovies(req.params.language);
     res.status(200).json(movies);
 }));
 
-router.get('/:id/:language', asyncHandler(async (req, res) => {
-    console.log("result:", req.params);
-    const movie = await getMovie({
-        queryKey: [null, { id: req.params.id, language: req.params.language }],
-    });
-    res.status(200).json(movie);
-}));
+router.get('/:id/detail/:language', asyncHandler(async (req, res) => {
+    console.log("movie:", req.params);
+        const movie = await getMovie({
+            queryKey: [null, { id: req.params.id, language: req.params.language }],
+        });
+        res.status(200).json(movie);
+    } 
+));
 
 router.get('/:id/review', asyncHandler(async (req, res) => {
-    console.log("result:",req.params);
+    console.log("review:",req.params);
     const reviews = await getMovieReviews(req.params.id);
-    res.status(200).json(reviews);
+    console.log(reviews);
+    // Send the parsed JSON response as the API result
+    res.json(reviews);
 }));
 
 router.get('/:id/images', asyncHandler(async (req, res) => {
-    const images = await getMovieImages(req.params.id);
+    console.log("images:", req.params.id);
+    const images = await getMovieImages({
+        queryKey: [null, { id: req.params.id}],
+    });
     res.status(200).json(images);
 }));
 
 router.get('/:id/similar/:language', asyncHandler(async (req, res) => {
-    console.log("result:", req.params);
+    console.log("similar:", req.params);
     const similarMovies = await getSimilarMovies({
         queryKey: [null, { id: req.params.id, language: req.params.language }],
     });
@@ -72,7 +80,7 @@ router.get('/:id/similar/:language', asyncHandler(async (req, res) => {
 }));
 
 router.get('/:id/credits/:language', asyncHandler(async (req, res) => {
-    console.log("result:", req.params);
+    console.log("credits:", req.params);
     const credits = await getCredits({
         queryKey: [null, { id: req.params.id, language: req.params.language }],
     });

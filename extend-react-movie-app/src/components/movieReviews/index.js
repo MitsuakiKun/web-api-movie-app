@@ -7,7 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Link } from "react-router-dom";
-import { getMovieReviews } from "../../api/tmdb-api";
+import { getMovieReviews } from "../../api/movies-api";
 import { excerpt } from "../../util";
 import { getString }  from '../../strings.js';
 import { getReviews } from "../../api/movies-api.js";
@@ -15,7 +15,6 @@ import { getReviews } from "../../api/movies-api.js";
 
 export default function MovieReviews({ movie, language}) {
   const [reviews, setReviews] = useState([]);
-  
   useEffect(() => {
     Promise.all([
       getMovieReviews(movie.id),

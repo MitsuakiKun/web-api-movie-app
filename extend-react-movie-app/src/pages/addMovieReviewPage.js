@@ -3,7 +3,7 @@ import PageTemplate from "../components/templateMoviePage";
 import ReviewForm from "../components/reviewForm";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
-import { getMovie } from "../api/tmdb-api";
+import { getMovie } from "../api/movies-api";
 import Spinner from "../components/spinner";
 import { LanguageContext } from '../contexts/languageContext';
 
@@ -15,11 +15,11 @@ const WriteReviewPage = (props) => {
 
   const { data: movie, error, isLoading, isError, refetch } = useQuery(
     ["movie", { id: movieId, language }],
-    getMovie,  
+    getMovie,
   );
 
   useEffect(() => {
-    refetch();
+      refetch();
   }, [language, refetch]);
 
 
