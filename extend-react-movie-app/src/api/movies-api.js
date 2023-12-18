@@ -1,13 +1,13 @@
-export const getMovies = async () => {
-    const response = await fetch(
-      'http://localhost:8080/api/movies', {
-      headers: {
-        'Authorization': window.localStorage.getItem('token')
-      }
+export const getMovies = async (language) => {
+  const response = await fetch(
+    `http://localhost:8080/api/movies/${language}`, {
+    headers: {
+      'Authorization': window.localStorage.getItem('token')
     }
-    )
-    return response.json();
-  };
+    }
+  )
+  return response.json();
+};
   
 export const login = async (username, password) => {
 const response = await fetch('http://localhost:8080/api/users', {
@@ -123,25 +123,166 @@ export const addToFavorites = async (id) => {
   }
 };
   
-    export const removeFromReviews = async (id) => {
-      const response = await fetch(`http://localhost:8080/api/reviews/${id}`, {
-          headers: {
-            'Authorization': window.localStorage.getItem('token'),
-            'Content-Type': 'application/json'
-          },
-          method: 'delete'
-      });
+export const removeFromReviews = async (id) => {
+  const response = await fetch(`http://localhost:8080/api/reviews/${id}`, {
+      headers: {
+        'Authorization': window.localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      },
+      method: 'delete'
+  });
+  return response.json();
+};
+
+export const getReviews = async (movieId) => {
+  const response = await fetch(`http://localhost:8080/api/reviews/${movieId}`, {
+      headers: {
+        'Authorization': window.localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      },
+      method: 'get'
+  });
+  const data = await response.json();
+  return data.reviews;
+};
+
+export const getMovie = ({ queryKey }) => {
+  const [, params] = queryKey;
+  const { id ,language} = params;
+  if (language === 'en-US'||language === 'ja-JA') {
+    console.log(`MovieDetailPage:${language}`)
+    return fetch(
+      `http://localhost:8080/api/movies/${id}/detail/${language}`,
+      {
+        headers: {
+          'Authorization': window.localStorage.getItem('token'),
+          'Content-Type': 'application/json'
+        },
+        method: 'get'
+    }
+    ).then((response) => {
+      if (!response.ok) {
+        throw new Error(response.json().message);
+      }
       return response.json();
-    };
+    })
+    .catch((error) => {
+      throw error
+  });
+} else {
+  return Promise.resolve(null);  
+}
+};
+
+export const getGenres = (language) => {
+  return fetch(
+    `http://localhost:8080/api/movies/tmdb/genres/${language}`, {
+      headers: {
+        'Authorization': window.localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      },
+      method: 'get'
+  }
+    ).then( (response) => {
+    if (!response.ok) {
+      throw new Error(response.json().message);
+    }
+    return response.json();
+  })
+  .catch((error) => {
+    throw error
+  });
+};
+
+export const getMovieImages = ({ queryKey }) => {
+  const [, params] = queryKey;
+  const { id } = params;
+  return fetch(
+    `http://localhost:8080/api/movies/${id}/images`, {
+      headers: {
+        'Authorization': window.localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      },
+      method: 'get'
+  }
+    ).then( async(response) => {
+      const jsonData = await response.json(); // Store the result in a variable
+      console.log(jsonData); // Now you can log or use jsonData as needed
+    if (!response.ok) {
+      throw new Error(response.json().message);
+    }
+    return jsonData; 
+
+  })
+  .catch((error) => {
+    throw error
+  });
+};
+
+export const getMovieReviews = (id) => {
+  return fetch(
+    `http://localhost:8080/api/movies/${id}/review`, {
+      headers: {
+        'Authorization': window.localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      },
+      method: 'get'
+  })      
+  .then((res) => res.json())
+  .then((json) => {
+    // console.log(json.results);
+    return json.results;
+  });
+};
+
+export const getUpcomingMovies = (language) => {
+  return fetch(
+    `http://localhost:8080/api/movies/tmdb/upcoming/${language}`, {
+      headers: {
+        'Authorization': window.localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      },
+      method: 'get'
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error(response.json().message);
+    }
+    return response.json();
+  })
+  .catch((error) => {
+    throw error
+  });
+};
   
-    export const getReviews = async (movieId) => {
-      const response = await fetch(`http://localhost:8080/api/reviews/${movieId}`, {
-          headers: {
-            'Authorization': window.localStorage.getItem('token'),
-            'Content-Type': 'application/json'
-          },
-          method: 'get'
-      });
-      const data = await response.json();
-      return data.reviews;
-    };
+export const getSimilarMovies = (id, language) => {
+  return fetch(
+    `http://localhost:8080/api/movies/${id}/similar/${language}`, {
+      headers: {
+        'Authorization': window.localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      },
+      method: 'get'
+  } )
+    .then((res) => res.json())
+      .then((json) => {
+      // console.log(json.results);
+      return json.results;
+    });
+};
+
+export const getCredits =(id, language) =>{
+  return fetch(
+    `http://localhost:8080/api/movies/${id}/credits/${language}`, {
+      headers: {
+        'Authorization': window.localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      },
+      method: 'get'
+  })
+    .then((res) => res.json())
+      .then((json) => {
+      console.log(json.results);
+      return json.cast; 
+    });
+};
+

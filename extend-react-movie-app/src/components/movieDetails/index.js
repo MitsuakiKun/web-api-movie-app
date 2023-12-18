@@ -12,7 +12,7 @@ import MovieReviews from "../movieReviews"
 import { getString }  from '../../strings.js';
 import MovieCard from "../movieCard";
 import Grid from "@mui/material/Grid";
-import { getSimilarMovies, getCredits } from "../../api/tmdb-api.js";
+import { getSimilarMovies, getCredits } from "../../api/movies-api.js";
 import { useNavigate } from 'react-router-dom';
 
 const root = {

@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { getUpcomingMovies } from "../api/tmdb-api";
+import { getUpcomingMovies } from "../api/movies-api";
 import PageTemplate from "../components/templateMovieListPage";
 import { useQuery } from 'react-query';
 import Spinner from '../components/spinner';

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useQuery } from 'react-query';
 import { useParams, Link } from 'react-router-dom'; 
-import { getCredits } from '../api/tmdb-api';
+import { getCredits } from '../api/movies-api';
 import { LanguageContext } from '../contexts/languageContext';
 import { getString }  from '../strings.js';
 import Card from '@mui/material/Card';

@@ -1,7 +1,7 @@
 import movieModel from './movieModel';
 import asyncHandler from 'express-async-handler';
 import express from 'express';
-import { getUpcomingMovies, getGenres } from '../tmdb-api';
+import { getUpcomingMovies, getGenres, getMovies, getMovie, getMovieImages, getMovieReviews, getSimilarMovies, getCredits } from '../tmdb-api';
 
 const router = express.Router();
 
@@ -26,25 +26,65 @@ router.get('/', asyncHandler(async (req, res) => {
     res.status(200).json(returnObject);
 }));
 
-// Get movie details
-router.get('/:id', asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id);
-    const movie = await movieModel.findByMovieDBId(id);
-    if (movie) {
-        res.status(200).json(movie);
-    } else {
-        res.status(404).json({message: 'The movie you requested could not be found.', status_code: 404});
-    }
-}));
 
-router.get('/tmdb/upcoming', asyncHandler(async (req, res) => {
-    const upcomingMovies = await getUpcomingMovies();
+
+router.get('/tmdb/upcoming/:language', asyncHandler(async (req, res) => {
+    console.log("upcoming:", req.params);
+    const upcomingMovies = await getUpcomingMovies(req.params.language);
     res.status(200).json(upcomingMovies);
 }));
 
-router.get('/tmdb/genres', asyncHandler(async (req, res) => {
-    const genres = await getGenres();
+router.get('/tmdb/genres/:language', asyncHandler(async (req, res) => {
+    console.log("genres:", req.params);
+    const genres = await getGenres(req.params.language);
     res.status(200).json(genres);
+}));
+
+router.get('/:language', asyncHandler(async (req, res) => {
+    console.log("movies:", req.params);
+    const movies = await getMovies(req.params.language);
+    res.status(200).json(movies);
+}));
+
+router.get('/:id/detail/:language', asyncHandler(async (req, res) => {
+    console.log("movie:", req.params);
+        const movie = await getMovie({
+            queryKey: [null, { id: req.params.id, language: req.params.language }],
+        });
+        res.status(200).json(movie);
+    } 
+));
+
+router.get('/:id/review', asyncHandler(async (req, res) => {
+    console.log("review:",req.params);
+    const reviews = await getMovieReviews(req.params.id);
+    console.log(reviews);
+    // Send the parsed JSON response as the API result
+    res.json(reviews);
+}));
+
+router.get('/:id/images', asyncHandler(async (req, res) => {
+    console.log("images:", req.params.id);
+    const images = await getMovieImages({
+        queryKey: [null, { id: req.params.id}],
+    });
+    res.status(200).json(images);
+}));
+
+router.get('/:id/similar/:language', asyncHandler(async (req, res) => {
+    console.log("similar:", req.params);
+    const similarMovies = await getSimilarMovies({
+        queryKey: [null, { id: req.params.id, language: req.params.language }],
+    });
+    res.status(200).json(similarMovies);
+}));
+
+router.get('/:id/credits/:language', asyncHandler(async (req, res) => {
+    console.log("credits:", req.params);
+    const credits = await getCredits({
+        queryKey: [null, { id: req.params.id, language: req.params.language }],
+    });
+    res.status(200).json(credits);
 }));
 
 

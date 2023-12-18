@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import MovieDetails from "../components/movieDetails/";
 import PageTemplate from "../components/templateMoviePage";
-import { getMovie } from '../api/tmdb-api'
+import { getMovie } from '../api/movies-api'
 import { useQuery } from "react-query";
 import Spinner from '../components/spinner'
 import { LanguageContext } from '../contexts/languageContext';
@@ -14,13 +14,14 @@ const MoviePage = (props) => {
   const { id } = useParams();
   const { language } = useContext(LanguageContext);
   
-  const { data: movie, error, isLoading, isError, refetch } = useQuery(
+  const { data: movie, error, isLoading, isError, refetch }= useQuery(
     ["movie", { id: id, language }],
-    getMovie,  
+    getMovie,
   );
 
   useEffect(() => {
-    refetch();
+    console.log('Current language:', language);
+      refetch();
   }, [language, refetch]);
 
   if (isLoading) {
