@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const  FavoriteSchema = new Schema({
-    id: { type: Number, required: true, unique: true },
+    id: { type: Number, required: true},
 });
 
   

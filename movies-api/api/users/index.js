@@ -46,7 +46,8 @@ router.put('/:id', async (req, res) => {
 // add favorites
 router.post('/:id/favorite', async (req, res) => {
     try{
-        await addFavorite(req.params.id);
+        const user = await User.findByUserName(req.body.username);
+        await addFavorite(req.params.id, user);
         res.status(201).json({ success: true, msg: 'Favorite successfully created.' });
     } catch (error) {
         // Log the error and return a generic error message
@@ -173,10 +174,10 @@ async function authenticateUser(req, res) {
     }
 }
 
-async function addFavorite(id) {
+async function addFavorite(id, user) {
     try {
-        console.log('Adding favorite for user ID:', id);
-        await Favorite.create({ id: id });
+        console.log('Adding favorite for  ID:', user.id);
+        await Favorite.create({ id: id, userId: user.id});
         console.log('Favorite created successfully.');
     } catch (error) {
         console.error('Error in addFavorite function:', error);

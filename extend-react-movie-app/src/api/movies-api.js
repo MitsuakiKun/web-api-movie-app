@@ -68,12 +68,12 @@ export const addToFavorites = async (id) => {
 
   export const addToMustWatches = async (id) => {
     const response = await fetch(`http://localhost:8080/api/users/${id}/mustWatch`, {
-        headers: {
-          'Authorization': window.localStorage.getItem('token'),
-          'Content-Type': 'application/json'
-        },
-        method: 'post',
-        body: JSON.stringify({ id: id })
+      headers: {
+        'Authorization': window.localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      },
+      method: 'post',
+      body: JSON.stringify({ id: id })
     });
     return response.json();
     };
